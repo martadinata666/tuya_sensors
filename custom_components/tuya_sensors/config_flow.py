@@ -207,7 +207,10 @@ class TuyaOptionsFlowHandler(config_entries.OptionsFlow):
                 if id_str.strip()
             ]
 
-            self.data = dict(self.config_entry.data)
+            # entry.options holds any previously-saved options-flow values
+            # (e.g. a prior scan_interval change); it must take precedence
+            # over the original entry.data from initial setup.
+            self.data = {**self.config_entry.data, **self.config_entry.options}
             self.data.update(user_input)
             self.data[CONF_DEVICE_IDS] = device_ids
 
@@ -241,7 +244,9 @@ class TuyaOptionsFlowHandler(config_entries.OptionsFlow):
             else:
                 return self.async_create_entry(title="", data=self.data)
 
-        data = self.config_entry.data
+        # Same merge here: show the current effective values (options
+        # override data) as the form defaults, not the stale originals.
+        data = {**self.config_entry.data, **self.config_entry.options}
 
         return self.async_show_form(
             step_id="init",
