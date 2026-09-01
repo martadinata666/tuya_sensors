@@ -23,7 +23,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from . import DOMAIN, _LOGGER
+from . import DOMAIN, _LOGGER, get_tuya_endpoint
 
 # Tuya API error codes
 _TUYA_ERR_FUNCTION_NOT_SUPPORT = 2003
@@ -232,7 +232,7 @@ async def _async_setup(
     scan_interval = domain_config["scan_interval"]
 
     # Set appropriate endpoint based on region
-    endpoint = f"https://openapi.tuya{region}.com"
+    endpoint = get_tuya_endpoint(region)
 
     # Initialize API connection
     tuya_api = TuyaOpenAPI(
