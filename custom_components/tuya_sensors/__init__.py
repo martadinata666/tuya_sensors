@@ -124,7 +124,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return False
 
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = entry.data
+    # entry.options holds anything changed later via the options flow
+    # (e.g. a new scan_interval from "reconfigure"); it must take
+    # precedence over the original entry.data from initial setup, or
+    # changes made there are silently ignored.
+    hass.data[DOMAIN][entry.entry_id] = {**entry.data, **entry.options}
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_update_options))
