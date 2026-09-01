@@ -2,11 +2,12 @@
 
 This Home Assistant integration allows you to connect and read sensor data from Tuya Cloud using the `tuya-connector-python` library. It supports both **UI-based configuration (config flow)** and **manual setup via `configuration.yaml`**.
 
-## What this repo did?
-- Add SG region, because SEA need SG region
-- Change deps tuya connector python 0.1.2
+## What this repo did/add?
+- Add SG region, because SEA needs the SG region; look into datacenter list at https://tuya.ai/developer/docs
 - Groundwork from https://github.com/silvanfischer/tuya_sensors
 - Additional fixes from https://github.com/loubser/tuya_sensors (This repo based on this repo)
+- Fixes vibe coded via Claude
+- Reduce poll limit to 1 secs, user at their own risk and needs
 
 ## Features
 - Read sensor data from Tuya Cloud.
