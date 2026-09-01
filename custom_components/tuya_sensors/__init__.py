@@ -20,7 +20,6 @@ from homeassistant.config_entries import ConfigEntry
 DOMAIN = "tuya_sensors"
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.SENSOR]
-MIN_SCAN_INTERVAL = timedelta(seconds=30)
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=1)
 
 # Some regions (e.g. Singapore) don't follow the standard
@@ -67,7 +66,7 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Optional(CONF_REGION, default="us"): cv.string,
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): vol.All(cv.time_period, vol.Clamp(min=MIN_SCAN_INTERVAL)),
+                ): cv.time_period,
             }
         )
     },
