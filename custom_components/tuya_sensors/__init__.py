@@ -23,6 +23,21 @@ PLATFORMS = [Platform.SENSOR]
 MIN_SCAN_INTERVAL = timedelta(seconds=30)
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=1)
 
+# Some regions (e.g. Singapore) don't follow the standard
+# https://openapi.tuya{region}.com endpoint pattern.
+REGION_ENDPOINT_OVERRIDES = {
+    "sg": "https://openapi-sg.iotbing.com",
+}
+
+
+def get_tuya_endpoint(region: str) -> str:
+    """Return the Tuya OpenAPI endpoint URL for a given region.
+
+    Shared by config_flow.py (connection test) and sensor.py (runtime
+    polling) so both always agree on the endpoint for a region.
+    """
+    return REGION_ENDPOINT_OVERRIDES.get(region, f"https://openapi.tuya{region}.com")
+
 # Custom constants
 CONF_API_SECRET = "api_secret"
 CONF_DEVICE_IDS = "device_ids"
