@@ -22,7 +22,18 @@ CONF_DEVICE_IDS = "device_ids"
 CONF_SENSORS = "sensors"
 
 # Region options
-REGIONS = ["us", "eu", "cn", "in"]
+REGIONS = ["us", "eu", "cn", "in", "sg"]
+
+# Some regions (e.g. Singapore) don't follow the standard
+# https://openapi.tuya{region}.com endpoint pattern.
+REGION_ENDPOINT_OVERRIDES = {
+    "sg": "https://openapi-sg.iotbing.com",
+}
+
+
+def _get_endpoint(region: str) -> str:
+    """Return the Tuya OpenAPI endpoint URL for a given region."""
+    return REGION_ENDPOINT_OVERRIDES.get(region, f"https://openapi.tuya{region}.com")
 
 
 class TuyaSensorsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -57,7 +68,7 @@ class TuyaSensorsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.hass.async_add_executor_job(__import__, "tuya_connector")
                 from tuya_connector import TuyaOpenAPI
 
-                endpoint = f"https://openapi.tuya{user_input[CONF_REGION]}.com"
+                endpoint = _get_endpoint(user_input[CONF_REGION])
                 tuya_api = TuyaOpenAPI(
                     access_id=user_input[CONF_API_KEY],
                     access_secret=user_input[CONF_API_SECRET],
@@ -217,7 +228,7 @@ class TuyaOptionsFlowHandler(config_entries.OptionsFlow):
                     await self.hass.async_add_executor_job(__import__, "tuya_connector")
                     from tuya_connector import TuyaOpenAPI
 
-                    endpoint = f"https://openapi.tuya{self.data[CONF_REGION]}.com"
+                    endpoint = _get_endpoint(self.data[CONF_REGION])
                     tuya_api = TuyaOpenAPI(
                         access_id=self.data[CONF_API_KEY],
                         access_secret=self.data[CONF_API_SECRET],
